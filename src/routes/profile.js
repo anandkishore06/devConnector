@@ -5,7 +5,6 @@ const profileRouter = express.Router();
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
     try{
-        
         const user = req.user;
         res.send(user);
     }
@@ -27,6 +26,6 @@ profileRouter.post("/profile/edit", userAuth, async (req, res) => {
     catch(err){
         res.status(400).send("ERR : " + err.message);
     }
-})
+});
 
 module.exports = profileRouter;

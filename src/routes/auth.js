@@ -7,16 +7,21 @@ const validator = require('validator');
 
 const authRouter = express.Router();
 
-authRouter.post("/users", async(req, res) => {
+authRouter.post("/signup", async(req, res) => {
     try{
         ValidateReqBody(req);
-        const {firstname,lastname,emailId,password, gender,age, skills} = req.body;
+        const {firstname,lastname,emailId,password} = req.body;
         const hashPassword = await bcrypt.hash(password, 10);
         const user = new User({
-            firstname,lastname,emailId,password : hashPassword, gender,age, skills
+            firstname,lastname,emailId,password : hashPassword
         });
-        await user.save();
-        res.send("User Added Successfully!");
+        const savedUser = await user.save();
+        const token = await user.getJWTToken();
+            res.cookie("token", token, {
+                expires: new Date(Date.now() + 8 + 360000000)
+            });
+        
+        res.json({message: "User Added Successfully!", data: savedUser});
     }
     catch(err){
         res.status(401).send("Something error while adding user : " + err.message);
@@ -30,7 +35,7 @@ authRouter.post("/login", async (req, res) => {
         const {emailId, password} = req.body;
         const user = await User.findOne({emailId: emailId});
         if(!user){
-            throw new Error("Not Registered User!");
+            return res.status(401).send("Not Registered User!");
         }
         const isPasswordValid = await user.validatePassword(password); 
         
@@ -39,10 +44,10 @@ authRouter.post("/login", async (req, res) => {
             res.cookie("token", token, {
                 expires: new Date(Date.now() + 8 + 360000000)
             });
-            res.json("Login Successfull !")
+            res.json(user)
         }
         else{
-            throw new Error("Invalid Credentials")
+            return res.status(401).send("Invalid Credentials")
         }
     }
     catch(err){

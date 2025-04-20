@@ -51,6 +51,12 @@ const userSchema = new mongoose.Schema({
     skills: {
         type: [String],
         default: "JS"
+    },
+    about: {
+        type: String
+    },
+    photoURL: {
+        type: String
     }
 },{
     collection: 'userData',

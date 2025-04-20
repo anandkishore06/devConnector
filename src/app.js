@@ -7,8 +7,14 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user")
-
+const cors = require("cors");
 const app = express();
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+}));
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -20,65 +26,34 @@ app.use("/", userRouter);
 
 // fetch user data /feed api
 
-app.get("/feed", async (req, res) => {
-    try{
-        const users = await User.find();
-        res.json(users);
-    }
-    catch(err){
-        res.status(401).json("Error");
-    }
-})
+// app.get("/feed", async (req, res) => {
+//     try{
+//         const users = await User.find();
+//         res.json(users);
+//     }
+//     catch(err){
+//         res.status(401).json("Error");
+//     }
+// })
 
 // Update using / put
 
-app.put("/users/:id", async (req, res) => {
-    try{
-        const {id} = req.params;
-        const fullUpdate = req.body;
-        const user = await User.findOneAndReplace({_id: id}, fullUpdate, {
-            new: true
-        })
-        if(!user) return res.status(404).send("user not found");
-        res.send("User Updated");
-    }
-    catch(err){
-        res.status(404).res.send(err);
-    }
-})
+// app.put("/users/:id", async (req, res) => {
+//     try{
+//         const {id} = req.params;
+//         const fullUpdate = req.body;
+//         const user = await User.findOneAndReplace({_id: id}, fullUpdate, {
+//             new: true
+//         })
+//         if(!user) return res.status(404).send("user not found");
+//         res.send("User Updated");
+//     }
+//     catch(err){
+//         res.status(404).res.send(err);
+//     }
+// })
 
-// update user using /patch 
 
-app.patch("/users/:id", async (req, res) =>{
-    try{
-        const {id} = req.params;
-        const updateUser = req.body;
-    
-        const updateNotAllowed = ["emailId", "gender"];
-        const isupdateNotAllowed = Object.keys(updateUser).some(k => {
-            console.log(k);
-            
-            return updateNotAllowed.includes(k);
-        })
-        
-        console.log(isupdateNotAllowed);
-        
-        if(isupdateNotAllowed){
-            throw new Error("Update not Allowed")
-        }
-        const user = await User.findByIdAndUpdate({_id:id}, updateUser, {
-            runValidators: true
-        });
-        console.log(user)
-        if(!user){
-            res.status(404).send("User Not Found");
-        }
-        res.send("User Updated /patch");
-    }
-    catch(err){
-        res.status(400).send("Error :" + err.message);
-    }
-})
 
 // delete user
 

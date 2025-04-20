@@ -5,7 +5,7 @@ const User = require("../models/user");
 
 const userRouter = express.Router();
 
-const USER_SAVEDATA = "firstname lastname gender age skills";
+const USER_SAVEDATA = "firstname lastname gender age skills photoURL about";
 
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   try {
@@ -16,7 +16,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
       status: "interested",
     }).populate("fromUserId", USER_SAVEDATA);
 
-    res.json({ message: "Request Fetched !", data: connectionRequest });
+    res.json({ message: "Request Fetched !",  data: connectionRequest });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
