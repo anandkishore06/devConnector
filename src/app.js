@@ -14,6 +14,8 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true,
 }));
+require("dotenv").config();
+
 
 
 app.use(express.json());
@@ -24,38 +26,7 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
-// fetch user data /feed api
 
-// app.get("/feed", async (req, res) => {
-//     try{
-//         const users = await User.find();
-//         res.json(users);
-//     }
-//     catch(err){
-//         res.status(401).json("Error");
-//     }
-// })
-
-// Update using / put
-
-// app.put("/users/:id", async (req, res) => {
-//     try{
-//         const {id} = req.params;
-//         const fullUpdate = req.body;
-//         const user = await User.findOneAndReplace({_id: id}, fullUpdate, {
-//             new: true
-//         })
-//         if(!user) return res.status(404).send("user not found");
-//         res.send("User Updated");
-//     }
-//     catch(err){
-//         res.status(404).res.send(err);
-//     }
-// })
-
-
-
-// delete user
 
 app.delete("/users/:id", async (req, res) => {
     try{
@@ -73,7 +44,7 @@ app.delete("/users/:id", async (req, res) => {
 
 connectDB().then( () => {
     console.log("Database Connection Successful!!!");
-    app.listen(7777, () => {
+    app.listen(process.env.PORT , () => {
         console.log("Server is listening on 7777...");
         
     });
