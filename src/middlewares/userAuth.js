@@ -4,7 +4,7 @@ const userAuth = async (req, res, next) => {
     try{
         const { token } = req.cookies;
     if(!token){
-        return res.status(401).send("Token Expired !");
+        return res.status(401).send("Please Login");
     }
     const decodedToken = await jwt.verify(token, "DEV@Connector");
     const user = await User.findOne({_id:decodedToken._id});
